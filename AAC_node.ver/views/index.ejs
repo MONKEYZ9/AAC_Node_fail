@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link rel="stylesheet" href="/stylesheets/index.css">
+<link rel="stylesheet" href="/stylesheets/info.css">
+<link rel="stylesheet" href="/stylesheets/join.css">
+<link rel="stylesheet" href="/stylesheets/login.css">
+<link rel="stylesheet" href="/stylesheets/nowStatue.css">
+<script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script> 
+<script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
+<script>
+  $(function map() {
+            navigator.geolocation.getCurrentPosition(function(pos) {
+		        var latitude = pos.coords.latitude;
+		        var longitude = pos.coords.longitude;
+                var location = latitude+","+longitude;
+                
+                $.getJSON("https://maps.googleapis.com/maps/api/geocode/json?latlng="+ location +"&location_type=ROOFTOP&result_type=street_address&language=en&key=", function (json) {
+                    var t = JSON.stringify(json['results'][0]['address_components'][3]['long_name']);
+                    var t2 = t.split('"');
+                    var city = t2[1];
+                    $.getJSON("http://api.openweathermap.org/data/2.5/weather?q="+city+"&appid=&units=metric&lang=kr", function (json) {
+                        alert((JSON.stringify(json["main"]["feels_like"])));
+                        $('#feel_like').html(JSON.stringify(json["main"]["feels_like"]) + ' ℃');
+                        $('#humidity').html(JSON.stringify(json["main"]["humidity"]) + ' %');
+                    });
+
+                });
+            });
+  });
+</script>
+<script	src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+</head>
+<body>
+	<div id="header">
+		<a href="index.do"><img src="/images/aac_logo.png"></a>
+	</div>
+	<div id="siteContentArea">
+	<div class="weatherToday">
+		<div class="title">오늘의 날씨</div>
+		<div class="middle">
+			<div class="weatherValue"><span class="mark" id="feel_like"></span></div>
+			<div class="weatherWord">체감 온도</div>
+			<div class="line"></div>
+		</div> 
+		<div class="middle">
+			<div class="weatherValue"><span class="mark" id="humidity"></span></div>
+			<div class="weatherWord">상대 습도</div>
+		</div> 
+		<div class="end">
+			<button onclick="goTempShow();">AAC 서비스 시작하기</button>
+		</div>	
+	</div>
+	<div id="siteLoginArea">
+			<div class="loginBox"><span class="loginTitle">login</span>
+		<form action="member.login" method="post" name="loginBox" onsubmit="return loginBoxCheck();">
+			<input id="loginInput" name="aac_email" placeholder="xxx@example.com">
+			<input id="loginInput" name="aac_password" type="password" placeholder="password">
+			<button class="loginBtn">로그인</button>
+		</form>
+			<button class="loginJoinBtn" onclick="goMemberJoin();">회원가입</button>
+	</div>
+	</div>
+</body>
+</html>
