@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script> 
+    <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script>
+        $(function map() {
+            navigator.geolocation.getCurrentPosition(function(pos) {
+		        var latitude = pos.coords.latitude;
+		        var longitude = pos.coords.longitude;
+                var location = latitude+","+longitude;
+                alert(location);
+                
+                $.getJSON("https://maps.googleapis.com/maps/api/geocode/json?latlng=36.348204,127.398059&location_type=ROOFTOP&result_type=street_address&language=en&key=AIzaSyAROKNciJwiWUkF3wHlIW1pB7aokIbDNOA", function (json) {
+                    var t = JSON.stringify(json['results'][0]['address_components'][3]['long_name']);
+                    var t2 = t.split('"');
+                    var city = t2[1];
+                    alert(city)
+                    $.getJSON("http://api.openweathermap.org/data/2.5/weather?q="+city+"&appid=baff8f3c6cbc28a4024e336599de28c4&units=metric&lang=kr", function (json) {
+                        alert((JSON.stringify(json["main"]["feels_like"])));
+                        $('#feel_like').html(JSON.stringify(json["main"]["feels_like"]) + ' ℃');
+                        $('#humidity').html(JSON.stringify(json["main"]["humidity"]) + ' %');
+                    });
+
+                });
+            });
+        });
+    </script>
+</head>
+    
+<body>
+    <p id="content"></p>
+</body>
+</html>
